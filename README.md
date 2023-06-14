@@ -1,4 +1,5 @@
-# AML + K8s
+# REDCap on Azure
+Inspired by https://github.com/microsoft/azure-redcap-paas/tree/main
 
 ## Usage
 
@@ -9,13 +10,3 @@ made deploy
 # make destroy
 ```
 
-Go to the AML workspace → Jobs → Create → Kubernetes compute → Add cluster → _Run an AML job_
-
-> **Warning**
-> The destroy isn't super stable, and may need some manual deletions
-
-
-## Modules
-[k8s/](./terraform/k8s/) borrows heavily from https://github.com/rancher/quickstart/tree/master/rancher/aws
-
-[aml/](./terraform/aml)
