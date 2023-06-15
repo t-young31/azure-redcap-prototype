@@ -1,4 +1,4 @@
-resource "random_password" "redcap" {
+resource "random_password" "mssql" {
   length           = 16
   special          = true
   min_lower        = 1

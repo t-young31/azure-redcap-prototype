@@ -3,12 +3,14 @@ resource "azurerm_virtual_network" "redcap" {
   resource_group_name = azurerm_resource_group.redcap.name
   location            = azurerm_resource_group.redcap.location
   address_space       = [local.vnet_address_space]
+  tags                = local.tags
 }
 
 resource "azurerm_network_security_group" "redcap" {
   name                = "nsg-${var.suffix}"
   resource_group_name = azurerm_resource_group.redcap.name
   location            = azurerm_resource_group.redcap.location
+  tags                = local.tags
 }
 
 resource "azurerm_subnet" "shared" {
@@ -40,4 +42,21 @@ resource "azurerm_subnet_network_security_group_association" "redcap" {
   }
   subnet_id                 = each.value
   network_security_group_id = azurerm_network_security_group.redcap.id
+}
+
+resource "azurerm_private_dns_zone" "all" {
+  for_each            = local.dns_zones
+  name                = each.value
+  resource_group_name = azurerm_resource_group.redcap.name
+  tags                = local.tags
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "all" {
+  for_each              = local.dns_zones
+  name                  = "vnl-${each.key}-${var.suffix}"
+  resource_group_name   = azurerm_resource_group.redcap.name
+  private_dns_zone_name = each.value
+  virtual_network_id    = azurerm_virtual_network.redcap.id
+
+  depends_on = [azurerm_private_dns_zone.all]
 }
