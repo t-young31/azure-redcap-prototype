@@ -14,3 +14,9 @@ fi
 echo "Exporting varaibles in .env file into environment"
 read -ra args < <(grep -v '^#' "$ENV_FILEPATH" | xargs)
 export "${args[@]}"
+
+export REDCAP_IMAGE_PATH="${ACR_NAME}.azurecr.io/redcap/redcap"
+echo "Set \$REDCAP_IMAGE_PATH: $REDCAP_IMAGE_PATH"
+
+export TF_VAR_redcap_image_path="$REDCAP_IMAGE_PATH"
+export TF_VAR_acr_name="$ACR_NAME"

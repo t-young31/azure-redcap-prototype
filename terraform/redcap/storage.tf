@@ -1,7 +1,7 @@
 resource "azurerm_storage_account" "redcap" {
-  name                     = "strg${local.suffix_short}"
-  resource_group_name      = azurerm_resource_group.redcap.name
-  location                 = azurerm_resource_group.redcap.location
+  name                     = "strg${var.suffix_short}"
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
   tags                     = local.tags
@@ -9,7 +9,7 @@ resource "azurerm_storage_account" "redcap" {
   network_rules {
     default_action = "Deny"
 
-    ip_rules = [local.deployers_ip]
+    ip_rules = var.debug ? [var.deployers_ip] : []
 
     bypass = [
       "AzureServices",
@@ -21,14 +21,14 @@ resource "azurerm_storage_account" "redcap" {
 
 resource "azurerm_private_endpoint" "blob" {
   name                = "pe-${azurerm_storage_account.redcap.name}"
-  resource_group_name = azurerm_resource_group.redcap.name
-  location            = azurerm_resource_group.redcap.location
+  resource_group_name = var.resource_group_name
+  location            = var.location
   tags                = local.tags
-  subnet_id           = azurerm_subnet.shared.id
+  subnet_id           = var.subnets["shared"].id
 
   private_dns_zone_group {
     name                 = "dns-zone-group-strg"
-    private_dns_zone_ids = [azurerm_private_dns_zone.all["blob"].id]
+    private_dns_zone_ids = [var.dns_zones["blob"].id]
   }
 
   private_service_connection {

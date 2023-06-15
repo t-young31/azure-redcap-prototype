@@ -15,7 +15,7 @@ resource "azurerm_key_vault" "redcap" {
   network_acls {
     bypass         = "AzureServices"
     default_action = "Deny"
-    ip_rules       = [local.deployers_ip]
+    ip_rules       = var.debug ? [local.deployers_ip] : []
   }
 }
 
