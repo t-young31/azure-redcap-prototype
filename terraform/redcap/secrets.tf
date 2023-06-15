@@ -1,9 +1,6 @@
-resource "random_password" "mssql" {
-  length           = 16
-  special          = true
-  min_lower        = 1
-  min_numeric      = 1
-  min_special      = 1
-  min_upper        = 1
-  override_special = "_%@"
+resource "azurerm_key_vault_secret" "all" {
+  for_each     = local.secrets
+  name         = each.key
+  value        = each.value
+  key_vault_id = var.keyvault_id
 }
