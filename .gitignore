@@ -4,3 +4,6 @@ terraform.tfstate*
 .terraform/
 .DS_Store
 id_rsa*
+redcap*.zip
+redcap_app/redcap/
+redcap_app/tmp/
