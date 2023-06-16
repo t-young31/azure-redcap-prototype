@@ -4,6 +4,7 @@ set -o pipefail
 set -o nounset
 
 # Check the database is up..
+# TODO
 
 
 a2enmod headers  # enable apache headers module
@@ -12,4 +13,6 @@ echo "Header always unset \"X-Powered-By\"" >> /etc/apache2/apache2.conf
 echo "Header unset \"X-Powered-By\"" >> /etc/apache2/apache2.conf
 
 service cron start 
-/usr/sbin/apache2ctl -D FOREGROUND
+
+# Call base entrypoint to start apacke
+/bin/init_container.sh
