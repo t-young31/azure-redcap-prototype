@@ -16,6 +16,10 @@ resource "azurerm_key_vault" "redcap" {
     bypass         = "AzureServices"
     default_action = "Deny"
     ip_rules       = var.debug ? [local.deployers_ip] : []
+
+    virtual_network_subnet_ids = [
+      azurerm_subnet.webapp.id
+    ]
   }
 }
 

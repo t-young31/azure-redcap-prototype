@@ -29,4 +29,4 @@ az acr login --name "${ACR_NAME}"  # ensure we're logged in to the ACR
 
 # e.g REDCAP_IMAGE_PATH=acryourname.azurecr.io/repository/redcap
 docker build -t "${REDCAP_IMAGE_PATH}" .
-#docker push "${REDCAP_IMAGE_PATH}"
+docker push "${REDCAP_IMAGE_PATH}"

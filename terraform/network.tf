@@ -34,6 +34,10 @@ resource "azurerm_subnet" "webapp" {
       actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
     }
   }
+
+  service_endpoints = [
+    "Microsoft.KeyVault"
+  ]
 }
 
 resource "azurerm_subnet" "mysql" {
