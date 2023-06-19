@@ -23,6 +23,7 @@ module "redcap" {
     shared = azurerm_subnet.shared
     webapp = azurerm_subnet.webapp
     mysql  = azurerm_subnet.mysql
+    agw = azurerm_subnet.agw
   }
   dns_zones = {
     for name, _ in local.dns_zones : name => azurerm_private_dns_zone.all[name]

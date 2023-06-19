@@ -58,6 +58,13 @@ resource "azurerm_subnet" "mysql" {
   }
 }
 
+resource "azurerm_subnet" "agw" {
+  name                 = "subnet-agw-${var.suffix}"
+  resource_group_name  = azurerm_resource_group.redcap.name
+  virtual_network_name = azurerm_virtual_network.redcap.name
+  address_prefixes     = [local.agw_address_space]
+}
+
 resource "azurerm_subnet_network_security_group_association" "redcap" {
   for_each = {
     for i, subnet in [azurerm_subnet.shared, azurerm_subnet.webapp] : subnet.name => subnet.id
