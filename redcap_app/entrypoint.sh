@@ -2,7 +2,7 @@
 set -o errexit
 set -o pipefail
 set -o nounset
-set -x trace
+#set -x trace
 
 function init_database_if_required(){
 
@@ -11,10 +11,11 @@ function init_database_if_required(){
     if [ "$mssql_command" = "none" ]; then
         echo "Database is initialised already"
     else
-        echo "Initalising database"
-        mysql --host-name "$APPSETTING_DBHostName" \
+        echo -n "Initalising database..."
+        mysql \
+            --host "$APPSETTING_DBHostName" \
             --user "$APPSETTING_DBUserName" \
-            --password"$APPSETTING_DBPassword" \
+            --password="$APPSETTING_DBPassword" \
             --database "$APPSETTING_DBName" \
             --ssl  <<EOF
 $mssql_command
@@ -25,12 +26,15 @@ UPDATE $APPSETTING_DBName.redcap_config SET value = '$APPSETTING_StorageContaine
 UPDATE $APPSETTING_DBName.redcap_config SET value = '4' WHERE field_name = 'edoc_storage_option';
 REPLACE INTO $APPSETTING_DBName.redcap_config (field_name, value) VALUES ('azure_quickstart', '1');
 EOF
+    echo "done"
     fi
 }
 
-function webserver_is_up(){
+function webserver_is_not_up(){
     # If the server is up then we should be able to curl the index page quickly
-    curl --max-time 5 "localhost:${WEBSITES_PORT}"
+    curl -f -s --max-time 1 "http://localhost:${WEBSITES_PORT}" > /dev/null 
+    exit_code=$?
+    [ "$exit_code" = "7" ] 
 }
 
 # Replace connection values
@@ -56,7 +60,8 @@ echo "Header set MyHeader \"%D %t"\" >> /etc/apache2/apache2.conf
 echo "Header always unset \"X-Powered-By\"" >> /etc/apache2/apache2.conf
 echo "Header unset \"X-Powered-By\"" >> /etc/apache2/apache2.conf
 
-service cron start 
+# Start the cron job
+/etc/init.d/cron start 
 
 # Move files as azure webapps mount things into /home/site/wwwroot/, for some reason
 rm -rf /home/site/wwwroot/*
@@ -65,9 +70,10 @@ cp -rs /wwwroot/* /home/site/wwwroot/  # symlinking is faster than moving
 # Call base entrypoint to start apache in the background
 /bin/init_container.sh  &
 
-while [ ! webserver_is_up ]; do
+while webserver_is_not_up; do
+    echo "Waiting for web server to be up..."
     sleep 5
 done
 
 init_database_if_required
-wait 
+wait # for the apache service started in the background

@@ -4,7 +4,7 @@ resource "azurerm_service_plan" "redcap" {
   location            = azurerm_resource_group.redcap.location
   tags                = local.tags
   os_type             = "Linux"
-  sku_name            = "S1" # TODO: prod, configureable
+  sku_name            = "P2v2" # TODO: prod, configureable
 }
 
 resource "azurerm_application_insights" "redcap" {

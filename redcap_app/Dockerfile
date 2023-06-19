@@ -11,7 +11,7 @@ RUN wget --no-check-certificate https://dl.cacerts.digicert.com/DigiCertGlobalRo
 
 # Copy the directory into the root and setup
 COPY redcap .
-RUN echo "* * * * * /usr/local/bin/php /home/site/wwwroot/cron.php > /dev/null" >> /etc/crontab
+RUN echo "*  *    * * *   root    /usr/local/bin/php /home/site/wwwroot/cron.php > /dev/null" >> /etc/crontab
 
 COPY settings.ini entrypoint.sh print_sql_command.py /
 ENTRYPOINT ["/entrypoint.sh"]

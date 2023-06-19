@@ -54,7 +54,7 @@ resource "azurerm_linux_web_app" "redcap" {
     "StorageKey"                                      = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.all["storage-account-key"].id})"
     "DBHostName"                                      = azurerm_mysql_flexible_server.redcap.fqdn
     "DBName"                                          = local.mysql_database_name
-    "DBUserName"                                      = "${local.mysql_admin_username}"
+    "DBUserName"                                      = local.mysql_admin_username
     "DBPassword"                                      = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.all["mysql-password"].id})"
     "DBSslCa"                                         = "/home/site/wwwroot/DigiCertGlobalRootCA.crt.pem"
     "PHP_INI_SCAN_DIR"                                = "/usr/local/etc/php/conf.d:/home/site"
@@ -108,7 +108,7 @@ resource "azurerm_role_assignment" "webapp_can_pull_images" {
   principal_id         = azurerm_linux_web_app.redcap.identity[0].principal_id
 }
 
-resource "azurerm_role_assignment" "webapp_read_redcap_secrets" {
+resource "azurerm_role_assignment" "webapp_can_read_secrets" {
   #for_each             = azurerm_key_vault_secret.all
   role_definition_name = "Key Vault Secrets User"
   #scope                = each.value.resource_id    # doesn't work??
