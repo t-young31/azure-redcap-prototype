@@ -1,5 +1,5 @@
 resource "random_password" "mysql" {
-  length           = 16
+  length           = 32
   special          = true
   min_lower        = 1
   min_numeric      = 1

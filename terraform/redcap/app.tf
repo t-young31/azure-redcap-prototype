@@ -7,11 +7,6 @@ resource "azurerm_linux_web_app" "redcap" {
   https_only                = true
   virtual_network_subnet_id = var.subnets["webapp"].id
 
-  # turn this off for now until terraform module can support "allow". as of 3/22 turning this to true sets it to require. azure supports, "require", "allow", "ignore"
-  # https://github.com/terraform-providers/terraform-provider-azurerm/issues/9343
-  # As a workaround, you can navigate to the App Service, go to Configuration blade, and set Client Certificate Mode to "Allow"
-  # client_cert_enabled = false
-
   identity {
     type = "SystemAssigned"
   }
@@ -77,16 +72,8 @@ resource "azurerm_linux_web_app" "redcap" {
     "XDT_MicrosoftApplicationInsights_BaseExtensions" = "disabled"
     "XDT_MicrosoftApplicationInsights_Mode"           = "recommended"
     "XDT_MicrosoftApplicationInsights_PreemptSdk"     = "disabled"
-    # "WEBSITE_DNS_SERVER"                              = "168.63.129.16"  # TODO
     # "WEBSITE_VNET_ROUTE_ALL"                          = "1"
-    # "SCM_DO_BUILD_DURING_DEPLOYMENT"                  = "1"
   }
-
-  #connection_string {
-  #  name  = "defaultConnection"
-  #  type  = "MySql"
-  #  value = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.all["connection-string"].id}))"
-  #}
 
   logs {
     http_logs {

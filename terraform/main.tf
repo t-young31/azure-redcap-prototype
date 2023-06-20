@@ -16,9 +16,13 @@ module "redcap" {
   app_service_plan_id = azurerm_service_plan.redcap.id
   acr_id              = azurerm_container_registry.redcap.id
   app_insights_name   = azurerm_application_insights.redcap.name
+
   deployers_ip        = local.deployers_ip
   debug               = var.debug
+
   redcap_image_path   = var.redcap_image_path
+  
+
   subnets = {
     shared = azurerm_subnet.shared
     webapp = azurerm_subnet.webapp
@@ -31,6 +35,5 @@ module "redcap" {
   depends_on = [
     azurerm_role_assignment.deployer_can_administrate_kv,
     azurerm_private_dns_zone_virtual_network_link.all,
-    azurerm_service_plan.redcap
   ]
 }
